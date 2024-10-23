@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storka - Remove Background</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Storka</h1>
+        <div id="iozp8u7imPsemh4eZtRUAh9h"></div>
+    </header>
+
+    <main>
+        <h2>Upload Your Image</h2>
+        <input type="file" id="upload" accept="image/*">
+        <button id="remove-bg">Remove Background</button>
+        <button id="download" style="display: none;">Download Image</button>
+        <div id="output"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 All rights reserved to Storka</p>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('datetime').innerText = now.toLocaleString();
+        }
+
+        document.getElementById('remove-bg').addEventListener('click', function() {
+            const fileInput = document.getElementById('upload');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        document.getElementById('output').innerHTML = '';
+                        document.getElementById('output').appendChild(canvas);
+                        
+                        // Enable the download button
+                        document.getElementById('download').style.display = 'inline';
+                        document.getElementById('download').onclick = function() {
+                            const link = document.createElement('a');
+                            link.download = 'image-without-background.png';
+                            link.href = canvas.toDataURL();
+                            link.click();
+                        };
+                    };
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please upload an image file first.');
+            }
+        });
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
